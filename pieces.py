@@ -12,11 +12,13 @@ class Piece:
         - color (int): the color of the piece (0: white, 1: black)
         - legal_moves (list): a list of legal moves
         - value (int): the value of the piece
+        - name (str): the name of the piece (p, r, n, b, q, k)
     """
-    def __init__(self, location: tuple[int, int], color: int, value: int = 0) -> None:
+    def __init__(self, location: tuple[int, int], color: int, value: int = 0, name: str="") -> None:
         self.location = location
         self.color = color
         self.legal_moves = []
+        self.name = name
 
     def get_legal_moves(self) -> list:
         return self.legal_moves
@@ -31,14 +33,13 @@ class Piece:
                     return True
         return False
 
-
 class Pawn(Piece):
     """
     A Pawn class to represent a pawn on the board
     Attributes:
     """
     def __init__(self, location: tuple[int, int], color: int) -> None:
-        super().__init__(location, color, value=1)
+        super().__init__(location, color, value=1, name="p")
 
     def has_moved(self) -> bool:
         """
@@ -91,7 +92,7 @@ class Rook(Piece):
      """
 
     def __init__(self, location: tuple[int, int], color: int) -> None:
-        super().__init__(location, color, value=5)
+        super().__init__(location, color, value=5, name="r")
 
     def check_upwards(self, board: Board) -> list[tuple[int, int]]:
         """
@@ -186,7 +187,7 @@ class Bishop(Piece):
      """
 
     def __init__(self, location: tuple[int, int], color: int) -> None:
-        super().__init__(location, color, value=3)
+        super().__init__(location, color, value=3, name="b")
 
     def check_up_left(self, board: Board) -> list[tuple[int, int]]:
         """
@@ -281,7 +282,7 @@ class Queen(Piece):
      """
 
     def __init__(self, location: tuple[int, int], color: int) -> None:
-        super().__init__(location, color, value=9)
+        super().__init__(location, color, value=9, name="q")
 
     def check_up_left(self, board: Board) -> list[tuple[int, int]]:
         """
@@ -452,7 +453,7 @@ class Knight(Piece):
      """
 
     def __init__(self, location: tuple[int, int], color: int) -> None:
-        super().__init__(location, color, value=3)
+        super().__init__(location, color, value=3, name="n")
 
     def check_horizontal(self, board: Board) -> list[tuple[int, int]]:
         legal_moves = []
@@ -494,7 +495,7 @@ class King(Piece):
      Attributes:
      """
     def __init__(self, location: tuple[int, int], color: int) -> None:
-        super().__init__(location, color, value=0)
+        super().__init__(location, color, value=0, name="k")
 
     def check_vertical(self, board: Board) -> list[tuple[int, int]]:
         legal_moves = []
