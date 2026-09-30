@@ -21,6 +21,18 @@ class Piece:
     def get_legal_moves(self) -> list:
         return self.legal_moves
 
+    def valid_square(self, square: tuple[int, int], board: Board) -> bool:
+        square = self.location[0] + d, self.location[1]
+        if 0 <= square[0] <= 7 and 0 <= square[1] <= 7:
+            if board.is_empty(square):
+                return True
+            else:
+                piece = board.get_square(square)
+                if piece.color != self.color:
+                    return True
+        return False
+
+
 class Pawn(Piece):
     """
     A Pawn class to represent a pawn on the board
@@ -441,7 +453,7 @@ class Knight(Piece):
      """
 
     def __init__(self, location: tuple[int, int], color: int) -> None:
-        super().__init__(location, color, value=9)
+        super().__init__(location, color, value=3)
 
     def check_horizontal(self, board: Board) -> list[tuple[int, int]]:
         legal_moves = []
@@ -450,13 +462,7 @@ class Knight(Piece):
         for h in twos:
             for v in ones:
                 square = self.location[0] + h, self.location[1] + v
-                if 0 <= square[0] <= 7 and 0 <= square[1] <= 7:
-                    if board.is_empty(square):
-                        legal_moves.append(square)
-                    else:
-                        piece = board.get_square(square)
-                        if piece.color != self.color:
-                            legal_moves.append(square)
+                if self.valid_square(square, board): legal_moves.append(square)
 
         return legal_moves
 
@@ -467,13 +473,7 @@ class Knight(Piece):
         for h in ones:
             for v in twos:
                 square = self.location[0] + h, self.location[1] + v
-                if 0 <= square[0] <= 7 and 0 <= square[1] <= 7:
-                    if board.is_empty(square):
-                        legal_moves.append(square)
-                    else:
-                        piece = board.get_square(square)
-                        if piece.color != self.color:
-                            legal_moves.append(square)
+                if self.valid_square(square, board): legal_moves.append(square)
 
         return legal_moves
 
@@ -486,5 +486,40 @@ class Knight(Piece):
         legal_moves = []
         legal_moves.append(self.check_horizontal(board))
         legal_moves.append(self.check_vertical(board))
+
+        self.legal_moves = legal_moves
+
+class King(Piece):
+    """
+     A King class to represent a King on the board
+     Attributes:
+     """
+    def __init__(self, location: tuple[int, int], color: int) -> None:
+        super().__init__(location, color, value=0)
+
+    def check_vertical(self, board: Board) -> list[tuple[int, int]]:
+        legal_moves = []
+        directions = [-1, 1]
+        all_directions = [-1, 0, 1]
+        for v in directions:
+            for h in all_directions:
+                square = self.location[0] + h, self.location[1] + v
+                if self.valid_square(square, board): legal_moves.append(square)
+
+        return legal_moves
+
+    def check_sideways(self, board: Board) -> list[tuple[int, int]]:
+        legal_moves = []
+        directions = [-1, 1]
+        for d in directions:
+            square = self.location[0] + d, self.location[1]
+            if self.valid_square(square, board): legal_moves.append(square)
+
+        return legal_moves
+
+    def update_legal_moves(self, board: Board) -> None:
+        legal_moves = []
+        legal_moves.append(self.check_vertical(board))
+        legal_moves.append(self.check_sideways(board))
 
         self.legal_moves = legal_moves
