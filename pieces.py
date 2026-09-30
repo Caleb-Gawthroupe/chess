@@ -22,7 +22,6 @@ class Piece:
         return self.legal_moves
 
     def valid_square(self, square: tuple[int, int], board: Board) -> bool:
-        square = self.location[0] + d, self.location[1]
         if 0 <= square[0] <= 7 and 0 <= square[1] <= 7:
             if board.is_empty(square):
                 return True
