@@ -1,7 +1,6 @@
 """
 @author: Caleb Gawthroupe
 """
-from tenacity import retry
 
 from board import Board
 
@@ -27,7 +26,7 @@ class Pawn(Piece):
     A Pawn class to represent a pawn on the board
     Attributes:
     """
-    def __init__(self, location: tuple, color: int) -> None:
+    def __init__(self, location: tuple[int, int], color: int) -> None:
         super().__init__(location, color, value=1)
 
     def has_moved(self) -> bool:
@@ -156,6 +155,11 @@ class Rook(Piece):
         return legal_moves
 
     def update_legal_moves(self, board: Board) -> None:
+        """
+        Updates the legal moves based on the current position
+        :param board:
+        :return:
+        """
         legal_moves = []
         legal_moves.append(self.check_upwards(board)) # Check upwards
         legal_moves.append(self.check_downwards(board)) # Check downards
@@ -246,6 +250,11 @@ class Bishop(Piece):
         return legal_moves
 
     def update_legal_moves(self, board: Board) -> None:
+        """
+        Updates the legal moves based on the current position
+        :param board:
+        :return:
+        """
         legal_moves = []
         legal_moves.append(self.check_up_left(board)) # Check upwards
         legal_moves.append(self.check_up_right(board)) # Check downards
@@ -256,7 +265,7 @@ class Bishop(Piece):
 
 class Queen(Piece):
     """
-     A Bishop class to represent a bishop on the board
+     A Queen class to represent a queen on the board
      Attributes:
      """
 
@@ -408,6 +417,11 @@ class Queen(Piece):
         return legal_moves
 
     def update_legal_moves(self, board: Board) -> None:
+        """
+        Updates the legal moves based on the current position
+        :param board:
+        :return:
+        """
         legal_moves = []
         legal_moves.append(self.check_up_left(board))
         legal_moves.append(self.check_up_right(board))
@@ -417,5 +431,60 @@ class Queen(Piece):
         legal_moves.append(self.check_downwards(board))
         legal_moves.append(self.check_left(board))
         legal_moves.append(self.check_right(board))
+
+        self.legal_moves = legal_moves
+
+class Knight(Piece):
+    """
+     A Knight class to represent a Knight on the board
+     Attributes:
+     """
+
+    def __init__(self, location: tuple[int, int], color: int) -> None:
+        super().__init__(location, color, value=9)
+
+    def check_horizontal(self, board: Board) -> list[tuple[int, int]]:
+        legal_moves = []
+        twos = [-2, 2]
+        ones = [-1, 1]
+        for h in twos:
+            for v in ones:
+                square = self.location[0] + h, self.location[1] + v
+                if 0 <= square[0] <= 7 and 0 <= square[1] <= 7:
+                    if board.is_empty(square):
+                        legal_moves.append(square)
+                    else:
+                        piece = board.get_square(square)
+                        if piece.color != self.color:
+                            legal_moves.append(square)
+
+        return legal_moves
+
+    def check_vertical(self, board: Board) -> list[tuple[int, int]]:
+        legal_moves = []
+        twos = [-2, 2]
+        ones = [-1, 1]
+        for h in ones:
+            for v in twos:
+                square = self.location[0] + h, self.location[1] + v
+                if 0 <= square[0] <= 7 and 0 <= square[1] <= 7:
+                    if board.is_empty(square):
+                        legal_moves.append(square)
+                    else:
+                        piece = board.get_square(square)
+                        if piece.color != self.color:
+                            legal_moves.append(square)
+
+        return legal_moves
+
+    def update_legal_moves(self, board: Board) -> None:
+        """
+        Updates the legal moves based on the current position
+        :param board:
+        :return:
+        """
+        legal_moves = []
+        legal_moves.append(self.check_horizontal(board))
+        legal_moves.append(self.check_vertical(board))
 
         self.legal_moves = legal_moves
