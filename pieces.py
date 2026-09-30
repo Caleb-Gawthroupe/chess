@@ -163,3 +163,93 @@ class Rook(Piece):
         legal_moves.append(self.check_right(board)) # Check right
 
         self.legal_moves = legal_moves
+
+class Bishop(Piece):
+    """
+     A Bishop class to represent a bishop on the board
+     Attributes:
+     """
+
+    def __init__(self, location: tuple[int, int], color: int) -> None:
+        super().__init__(location, color, value=3)
+
+    def check_up_left(self, board: Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[1] <= 7 and square[0] >= 0:
+            if board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] - 1, square[1] + 1
+        return legal_moves
+
+    def check_up_right(self, board: Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] <= 7 and square[1] <= 7:
+            if board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] + 1, square[1] + 1
+        return legal_moves
+
+    def check_down_left(self, board: Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] >= 0 and square[1] >= 0:
+            if board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] - 1, square[1] - 1
+        return legal_moves
+
+    def check_down_right(self, board: Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] <= 7 and square[1] >= 0:
+            if board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] + 1, square[1] - 1
+        return legal_moves
+
+    def update_legal_moves(self, board: Board) -> None:
+        legal_moves = []
+        legal_moves.append(self.check_up_left(board)) # Check upwards
+        legal_moves.append(self.check_up_right(board)) # Check downards
+        legal_moves.append(self.check_down_left(board)) # Check left
+        legal_moves.append(self.check_down_right(board)) # Check right
+
+        self.legal_moves = legal_moves
