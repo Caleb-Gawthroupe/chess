@@ -2,7 +2,6 @@
 @author: Caleb Gawthroupe
 """
 
-import pygame
 import pieces
 
 class Board:
