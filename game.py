@@ -55,8 +55,8 @@ class Visualizer:
         svg_surface = pygame.transform.scale(svg_surface,
                                         (self.screen.get_height()/8, self.screen.get_height()/8))
 
-        x_pos = (location[0]*self.square_height)+self.indent
-        y_pos = (location[1]*self.square_height)
+        x_pos = (location[1]*self.square_height)+self.indent
+        y_pos = (location[0]*self.square_height)
 
 
         self.screen.blit(svg_surface, (x_pos, y_pos))
@@ -67,7 +67,7 @@ clock = pygame.time.Clock()
 running = True
 game_board = board.Board()
 game_board.generate_board()
-
+print(game_board)
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
