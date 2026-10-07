@@ -13,6 +13,7 @@ BLACK = (0, 0, 0)
 BLUE = (75, 115, 153)
 BEIGE = (234, 233, 210)
 GREY = (48, 46, 43)
+RED = (255, 50, 50)
 
 dark_square_color = BLUE
 light_square_color = BEIGE
@@ -62,6 +63,11 @@ class Visualizer:
 
         self.screen.blit(svg_surface, (x_pos, y_pos))
 
+    def debug_hitboxes(self):
+        for p in game_board.piece_list:
+            if type(p.hitbox) is pygame.Rect:
+                pygame.draw.rect(self.screen, RED, p.hitbox)
+
 visualizer = Visualizer()
 pygame.init()
 clock = pygame.time.Clock()
@@ -74,6 +80,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_pos = pygame.mouse.get_pos()
+            for piece in game_board.piece_list:
+                if piece.collision(mouse_pos):
+                    print("COLLISION")
 
     visualizer.screen.fill(GREY)
     visualizer.draw_board()

@@ -39,6 +39,14 @@ class Piece:
 
         self.hitbox = pygame.Rect(x_pos, y_pos, visualizer.square_height, visualizer.square_height)
 
+    def collision(self, mouse_pos: tuple[int, int]) -> bool:
+        """
+        :param mouse_pos: the position of the mouse on the board
+        :return: whether or not the mouse position collides with the piece on the board
+        """
+        return self.hitbox.collidepoint(mouse_pos)
+
+
     def get_legal_moves(self) -> list:
         return self.legal_moves
 
