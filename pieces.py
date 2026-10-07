@@ -2,7 +2,14 @@
 @author: Caleb Gawthroupe
 """
 
-import board
+from typing import TYPE_CHECKING
+import pygame
+
+# This block only runs during static analysis / linting, NEVER at runtime:
+if TYPE_CHECKING:
+    import board
+
+
 class Piece:
     """
     A Piece superclass to represent a piece on the board
@@ -12,6 +19,7 @@ class Piece:
         - legal_moves (list): a list of legal moves
         - value (int): the value of the piece
         - name (str): the name of the piece (p, r, n, b, q, k)
+        - hitbox (pygame.Rect): the rect of the piece
     """
     def __init__(self, location: tuple[int, int], color: int, value: int = 0, name: str="") -> None:
         self.location = location

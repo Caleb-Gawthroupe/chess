@@ -79,7 +79,7 @@ class Board:
         returns a Piece object
         """
         assert not self.is_empty(pos)
-        return self.board[pos[0],pos[1]]
+        return self.board[pos[0]][pos[1]]
 
 
 if __name__ == "__main__":

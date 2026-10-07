@@ -67,7 +67,6 @@ clock = pygame.time.Clock()
 running = True
 game_board = board.Board()
 game_board.generate_board()
-print(game_board)
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
