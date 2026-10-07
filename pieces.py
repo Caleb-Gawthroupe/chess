@@ -1,13 +1,14 @@
 """
 @author: Caleb Gawthroupe
 """
-
+from __future__ import annotations
 from typing import TYPE_CHECKING
 import pygame
 
-# This block only runs during static analysis / linting, NEVER at runtime:
+
 if TYPE_CHECKING:
     import board
+    import game
 
 
 class Piece:
@@ -21,11 +22,22 @@ class Piece:
         - name (str): the name of the piece (p, r, n, b, q, k)
         - hitbox (pygame.Rect): the rect of the piece
     """
-    def __init__(self, location: tuple[int, int], color: int, value: int = 0, name: str="") -> None:
+    def __init__(self, location: tuple[int, int], color: int, value: int = 0,  name: str="") -> None:
         self.location = location
         self.color = color
         self.legal_moves = []
         self.name = name
+        self.hitbox = None
+
+    def update_hitbox(self, visualizer: game.Visualizer) -> None:
+        """
+         Updates the hitbox of the piece relative to the screen
+        :return:
+        """
+        x_pos = (self.location[1]*visualizer.square_height)+visualizer.indent
+        y_pos = (self.location[0]*visualizer.square_height)
+
+        self.hitbox = pygame.Rect(x_pos, y_pos, visualizer.square_height, visualizer.square_height)
 
     def get_legal_moves(self) -> list:
         return self.legal_moves

@@ -6,6 +6,7 @@ import pygame
 
 import board
 from pieces import Piece
+from constants import *
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -18,7 +19,7 @@ light_square_color = BEIGE
 
 class Visualizer:
     def __init__(self):
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.square_height = self.screen.get_height() / 8
         self.indent = (self.screen.get_width()-self.screen.get_height())/2
         pygame.display.set_caption("Chess")
@@ -74,13 +75,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # fill the screen with a color to wipe away anything from last frame
     visualizer.screen.fill(GREY)
     visualizer.draw_board()
     for piece in game_board.piece_list:
         visualizer.draw_piece(piece)
+        piece.update_hitbox(visualizer)
 
-    # RENDER YOUR GAME HERE
 
     # flip() the display to put your work on screen
     pygame.display.flip()
