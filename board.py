@@ -38,26 +38,29 @@ class Board:
         """
         # Add pawns
         for i in range(8):
-            self.piece_list.append(pieces.Pawn(location=(1, i), color=1))
-            self.piece_list.append(pieces.Pawn(location=(6, i), color=0))
+            self.piece_list.append(pieces.Pawn(location=(i, 1), color=1))
+            self.piece_list.append(pieces.Pawn(location=(i, 6), color=0))
         # Add rooks
         for col in [0, 7]:
-            self.piece_list.append(pieces.Rook(location=(0, col), color=1))
-            self.piece_list.append(pieces.Rook(location=(7, col), color=0))
+            self.piece_list.append(pieces.Rook(location=(col, 0), color=1))
+            self.piece_list.append(pieces.Rook(location=(col, 7), color=0))
         # Add Knights
         for col in [1, 6]:
-            self.piece_list.append(pieces.Knight(location=(0, col), color=1))
-            self.piece_list.append(pieces.Knight(location=(7, col), color=0))
+            self.piece_list.append(pieces.Knight(location=(col, 0), color=1))
+            self.piece_list.append(pieces.Knight(location=(col, 7), color=0))
         # Add Bishops
         for col in [2, 5]:
-            self.piece_list.append(pieces.Bishop(location=(0, col), color=1))
-            self.piece_list.append(pieces.Bishop(location=(7, col), color=0))
+            self.piece_list.append(pieces.Bishop(location=(col, 0), color=1))
+            self.piece_list.append(pieces.Bishop(location=(col, 7), color=0))
         # Add Kings
-        self.piece_list.append(pieces.King(location=(0, 4), color=1))
-        self.piece_list.append(pieces.King(location=(7, 4), color=0))
+        self.piece_list.append(pieces.King(location=(4, 0), color=1))
+        self.piece_list.append(pieces.King(location=(4, 7), color=0))
         # Add Queens
-        self.piece_list.append(pieces.Queen(location=(0, 3), color=1))
-        self.piece_list.append(pieces.Queen(location=(7, 3), color=0))
+        self.piece_list.append(pieces.Queen(location=(3, 0), color=1))
+        self.piece_list.append(pieces.Queen(location=(3, 7), color=0))
+
+        for piece in self.piece_list:
+            piece.update_legal_moves(self)
 
     def generate_board(self) -> None:
         """

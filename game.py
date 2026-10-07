@@ -63,6 +63,12 @@ class Visualizer:
 
         self.screen.blit(svg_surface, (x_pos, y_pos))
 
+    def draw_move_hint(self, pos: tuple[int, int]) -> None:
+        circle_surf = pygame.Surface((200, 200), pygame.SRCALPHA)
+        x_pos = pos[1]*int(self.square_height)+self.indent
+        y_pos = pos[0]*int(self.square_height)
+        pygame.draw.circle(circle_surf, (255, 0, 0, 128), (x_pos, y_pos), self.square_height/2)
+
     def debug_hitboxes(self):
         for p in game_board.piece_list:
             if type(p.hitbox) is pygame.Rect:
@@ -84,7 +90,9 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             for piece in game_board.piece_list:
                 if piece.collision(mouse_pos):
-                    print("COLLISION")
+                    print(piece.get_legal_moves())
+                    for square in piece.get_legal_moves():
+                        visualizer.draw_move_hint(square)
 
     visualizer.screen.fill(GREY)
     visualizer.draw_board()

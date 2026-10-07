@@ -4,6 +4,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import pygame
+from abc import ABC, abstractmethod
 
 
 if TYPE_CHECKING:
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     import game
 
 
-class Piece:
+class Piece(ABC):
     """
     A Piece superclass to represent a piece on the board
     Attributes:
@@ -60,6 +61,11 @@ class Piece:
                     return True
         return False
 
+    @abstractmethod
+    def update_legal_moves(self, game_board: board.Board) -> None:
+        """Calculate and return valid moves for this piece."""
+        pass
+
 class Pawn(Piece):
     """
     A Pawn class to represent a pawn on the board
@@ -92,7 +98,7 @@ class Pawn(Piece):
         """
         legal_moves = []
         color_flip = 1
-        if self.color == 1: color_flip = -1 # Flip the direction we check if we are black
+        if self.color == 0: color_flip = -1 # Flip the direction we check if we are black
 
         # Check square in front of pawn
         square = (self.location[0], self.location[1] + 1*color_flip)
@@ -107,8 +113,11 @@ class Pawn(Piece):
         # Check for diagonals
         square1 = (self.location[0] + 1, self.location[1] + 1*color_flip)
         square2 = (self.location[0] -1, self.location[1] + 1*color_flip)
-        if self.check_diagonal(square1, game_board): legal_moves.append(square1)
-        if self.check_diagonal(square2, game_board): legal_moves.append(square2)
+
+        if self.valid_square(square1, game_board):
+            if self.check_diagonal(square1, game_board): legal_moves.append(square1)
+        if self.valid_square(square2, game_board):
+            if self.check_diagonal(square2, game_board): legal_moves.append(square2)
 
         self.legal_moves = legal_moves
 
