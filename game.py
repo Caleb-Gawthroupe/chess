@@ -60,7 +60,6 @@ class Visualizer:
         x_pos = (location[0]*self.square_height)+self.indent
         y_pos = (location[1]*self.square_height)
 
-
         self.screen.blit(svg_surface, (x_pos, y_pos))
 
     def draw_move_hint(self, location: tuple[int, int]) -> None:
@@ -83,6 +82,34 @@ class Visualizer:
             if type(p.hitbox) is pygame.Rect:
                 pygame.draw.rect(self.screen, RED, p.hitbox)
 
+    def get_square_from_mouse(
+            self, mouse_pos: tuple[int, int]
+    ) -> tuple[int, int] | None:
+        """Converts screen pixel coordinates (mouse_pos) to chess grid coordinates (col, row).
+
+        Returns None if the click is outside the 8x8 board.
+        """
+        x, y = mouse_pos
+
+        # 1. Adjust for horizontal indentation
+        adjusted_x = x - self.indent
+
+        # 2. Check if the mouse is outside the board area
+        board_size = self.screen.get_height()  # 8 * square_height
+        if (
+                adjusted_x < 0
+                or adjusted_x >= board_size
+                or y < 0
+                or y >= board_size
+        ):
+            return None
+
+        # 3. Compute grid column and row
+        col = int(adjusted_x // self.square_height)
+        row = int(y // self.square_height)
+
+        return (col, row)
+
 visualizer = Visualizer()
 pygame.init()
 clock = pygame.time.Clock()
@@ -100,14 +127,22 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             for piece in game_board.piece_list:
                 if piece.collision(mouse_pos):
-                    print(piece.get_legal_moves())
                     selected_piece = piece
+            if selected_piece is not None:
+                mouse_square = visualizer.get_square_from_mouse(mouse_pos)
+                if mouse_square in selected_piece.get_legal_moves():
+                    # Convert mouse_pos to board location
+
+                    selected_piece.move(mouse_square)
+                    selected_piece.update_hitbox(visualizer)
+                    selected_piece = None
 
     visualizer.screen.fill(GREY)
     visualizer.draw_board()
     for piece in game_board.piece_list:
         visualizer.draw_piece(piece)
         piece.update_hitbox(visualizer)
+        piece.update_legal_moves(game_board)
 
     if selected_piece is not None:
         for square in selected_piece.get_legal_moves():

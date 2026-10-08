@@ -30,6 +30,9 @@ class Piece(ABC):
         self.name = name
         self.hitbox = None
 
+    def move(self, new_location: tuple[int, int]) -> None:
+        self.location = new_location
+
     def update_hitbox(self, visualizer: game.Visualizer) -> None:
         """
          Updates the hitbox of the piece relative to the screen
@@ -410,7 +413,7 @@ class King(Piece):
 
     def update_legal_moves(self, game_board: board.Board) -> None:
         legal_moves = []
-        legal_moves.append(self.check_vertical(game_board))
-        legal_moves.append(self.check_sideways(game_board))
+        legal_moves.extend(self.check_vertical(game_board))
+        legal_moves.extend(self.check_sideways(game_board))
 
         self.legal_moves = legal_moves
