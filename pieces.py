@@ -18,7 +18,7 @@ class Piece(ABC):
     Attributes:
         - location (tuple): the location of the piece on the board (column, row)
         - color (int): the color of the piece (0: white, 1: black)
-        - legal_moves (list): a list of legal moves
+        - legal_moves (list): a list of legal moves in form [(column, row)]
         - value (int): the value of the piece
         - name (str): the name of the piece (p, r, n, b, q, k)
         - hitbox (pygame.Rect): the rect of the piece
@@ -35,8 +35,8 @@ class Piece(ABC):
          Updates the hitbox of the piece relative to the screen
         :return:
         """
-        x_pos = (self.location[1]*visualizer.square_height)+visualizer.indent
-        y_pos = (self.location[0]*visualizer.square_height)
+        y_pos = (self.location[1]*visualizer.square_height)
+        x_pos = (self.location[0]*visualizer.square_height)+visualizer.indent
 
         self.hitbox = pygame.Rect(x_pos, y_pos, visualizer.square_height, visualizer.square_height)
 
@@ -47,6 +47,149 @@ class Piece(ABC):
         """
         return self.hitbox.collidepoint(mouse_pos)
 
+    def check_up_left(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[1] <= 7 and square[0] >= 0:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] - 1, square[1] + 1
+        return legal_moves
+
+    def check_up_right(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] <= 7 and square[1] <= 7:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] + 1, square[1] + 1
+        return legal_moves
+
+    def check_down_left(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] >= 0 and square[1] >= 0:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] - 1, square[1] - 1
+        return legal_moves
+
+    def check_down_right(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] <= 7 and square[1] >= 0:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] + 1, square[1] - 1
+        return legal_moves
+
+    def check_upwards(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[1] <= 7:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0], square[1] + 1
+        return legal_moves
+
+    def check_downwards(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[1] >= 0:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0], square[1] - 1
+        return legal_moves
+
+    def check_left(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] >= 0:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] - 1, square[1]
+        return legal_moves
+
+    def check_right(self, game_board: board.Board) -> list[tuple[int, int]]:
+        """
+        :return: all upward legal moves
+        """
+        legal_moves = []
+        # Check upwards
+        square = self.location
+        while square[0] <= 7:
+            if game_board.is_empty(square):
+                legal_moves.append(square)
+            else:
+                piece = game_board.get_square(square)
+                if piece.color != self.color:
+                    legal_moves.append(square)
+                    return legal_moves
+            square = square[0] + 1, square[1]
+        return legal_moves
 
     def get_legal_moves(self) -> list:
         return self.legal_moves
@@ -78,13 +221,13 @@ class Pawn(Piece):
         """
         Returns whether the pawn has moved yet
         """
-        if self.color == 0 and self.location[1] == 1:
+        if self.color == 0 and self.location[1] == 6:
             return False
-        elif self.color == 1 and self.location[1] == 6:
+        elif self.color == 1 and self.location[1] == 1:
             return False
         return True
 
-    def check_diagonal(self, square: tuple[int, int], game_board: board.Board) -> bool:
+    def check_pawn_diagonal(self, square: tuple[int, int], game_board: board.Board) -> bool:
         if not game_board.is_empty(square):
             piece = game_board.get_square(square)
             if piece.color != self.color:
@@ -115,9 +258,9 @@ class Pawn(Piece):
         square2 = (self.location[0] -1, self.location[1] + 1*color_flip)
 
         if self.valid_square(square1, game_board):
-            if self.check_diagonal(square1, game_board): legal_moves.append(square1)
+            if self.check_pawn_diagonal(square1, game_board): legal_moves.append(square1)
         if self.valid_square(square2, game_board):
-            if self.check_diagonal(square2, game_board): legal_moves.append(square2)
+            if self.check_pawn_diagonal(square2, game_board): legal_moves.append(square2)
 
         self.legal_moves = legal_moves
 
@@ -130,78 +273,6 @@ class Rook(Piece):
     def __init__(self, location: tuple[int, int], color: int) -> None:
         super().__init__(location, color, value=5, name="r")
 
-    def check_upwards(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[1] <= 7:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0], square[1] + 1
-        return legal_moves
-
-    def check_downwards(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[1] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0], square[1] - 1
-        return legal_moves
-
-    def check_left(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] - 1, square[1]
-        return legal_moves
-
-    def check_right(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] <= 7:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] + 1, square[1]
-        return legal_moves
-
     def update_legal_moves(self, game_board: board.Board) -> None:
         """
         Updates the legal moves based on the current position
@@ -209,10 +280,10 @@ class Rook(Piece):
         :return:
         """
         legal_moves = []
-        legal_moves.append(self.check_upwards(game_board)) # Check upwards
-        legal_moves.append(self.check_downwards(game_board)) # Check downards
-        legal_moves.append(self.check_left(game_board)) # Check left
-        legal_moves.append(self.check_right(game_board)) # Check right
+        legal_moves.extend(self.check_upwards(game_board)) # Check upwards
+        legal_moves.extend(self.check_downwards(game_board)) # Check downards
+        legal_moves.extend(self.check_left(game_board)) # Check left
+        legal_moves.extend(self.check_right(game_board)) # Check right
 
         self.legal_moves = legal_moves
 
@@ -225,78 +296,6 @@ class Bishop(Piece):
     def __init__(self, location: tuple[int, int], color: int) -> None:
         super().__init__(location, color, value=3, name="b")
 
-    def check_up_left(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[1] <= 7 and square[0] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] - 1, square[1] + 1
-        return legal_moves
-
-    def check_up_right(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] <= 7 and square[1] <= 7:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] + 1, square[1] + 1
-        return legal_moves
-
-    def check_down_left(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] >= 0 and square[1] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] - 1, square[1] - 1
-        return legal_moves
-
-    def check_down_right(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] <= 7 and square[1] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] + 1, square[1] - 1
-        return legal_moves
-
     def update_legal_moves(self, game_board: board.Board) -> None:
         """
         Updates the legal moves based on the current position
@@ -304,10 +303,10 @@ class Bishop(Piece):
         :return:
         """
         legal_moves = []
-        legal_moves.append(self.check_up_left(game_board)) # Check upwards
-        legal_moves.append(self.check_up_right(game_board)) # Check downards
-        legal_moves.append(self.check_down_left(game_board)) # Check left
-        legal_moves.append(self.check_down_right(game_board)) # Check right
+        legal_moves.extend(self.check_up_left(game_board)) # Check upwards
+        legal_moves.extend(self.check_up_right(game_board)) # Check downards
+        legal_moves.extend(self.check_down_left(game_board)) # Check left
+        legal_moves.extend(self.check_down_right(game_board)) # Check right
 
         self.legal_moves = legal_moves
 
@@ -320,150 +319,6 @@ class Queen(Piece):
     def __init__(self, location: tuple[int, int], color: int) -> None:
         super().__init__(location, color, value=9, name="q")
 
-    def check_up_left(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[1] <= 7 and square[0] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] - 1, square[1] + 1
-        return legal_moves
-
-    def check_up_right(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] <= 7 and square[1] <= 7:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] + 1, square[1] + 1
-        return legal_moves
-
-    def check_down_left(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] >= 0 and square[1] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] - 1, square[1] - 1
-        return legal_moves
-
-    def check_down_right(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] <= 7 and square[1] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] + 1, square[1] - 1
-        return legal_moves
-
-    def check_upwards(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[1] <= 7:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0], square[1] + 1
-        return legal_moves
-
-    def check_downwards(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[1] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0], square[1] - 1
-        return legal_moves
-
-    def check_left(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] >= 0:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] - 1, square[1]
-        return legal_moves
-
-    def check_right(self, game_board: board.Board) -> list[tuple[int, int]]:
-        """
-        :return: all upward legal moves
-        """
-        legal_moves = []
-        # Check upwards
-        square = self.location
-        while square[0] <= 7:
-            if game_board.is_empty(square):
-                legal_moves.append(square)
-            else:
-                piece = game_board.get_square(square)
-                if piece.color != self.color:
-                    legal_moves.append(square)
-                    return legal_moves
-            square = square[0] + 1, square[1]
-        return legal_moves
-
     def update_legal_moves(self, game_board: board.Board) -> None:
         """
         Updates the legal moves based on the current position
@@ -471,14 +326,14 @@ class Queen(Piece):
         :return:
         """
         legal_moves = []
-        legal_moves.append(self.check_up_left(game_board))
-        legal_moves.append(self.check_up_right(game_board))
-        legal_moves.append(self.check_down_left(game_board))
-        legal_moves.append(self.check_down_right(game_board))
-        legal_moves.append(self.check_upwards(game_board))
-        legal_moves.append(self.check_downwards(game_board))
-        legal_moves.append(self.check_left(game_board))
-        legal_moves.append(self.check_right(game_board))
+        legal_moves.extend(self.check_up_left(game_board))
+        legal_moves.extend(self.check_up_right(game_board))
+        legal_moves.extend(self.check_down_left(game_board))
+        legal_moves.extend(self.check_down_right(game_board))
+        legal_moves.extend(self.check_upwards(game_board))
+        legal_moves.extend(self.check_downwards(game_board))
+        legal_moves.extend(self.check_left(game_board))
+        legal_moves.extend(self.check_right(game_board))
 
         self.legal_moves = legal_moves
 
@@ -520,8 +375,8 @@ class Knight(Piece):
         :return:
         """
         legal_moves = []
-        legal_moves.append(self.check_horizontal(game_board))
-        legal_moves.append(self.check_vertical(game_board))
+        legal_moves.extend(self.check_horizontal(game_board))
+        legal_moves.extend(self.check_vertical(game_board))
 
         self.legal_moves = legal_moves
 

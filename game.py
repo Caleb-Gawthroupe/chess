@@ -57,17 +57,26 @@ class Visualizer:
         svg_surface = pygame.transform.scale(svg_surface,
                                         (self.screen.get_height()/8, self.screen.get_height()/8))
 
-        x_pos = (location[1]*self.square_height)+self.indent
-        y_pos = (location[0]*self.square_height)
+        x_pos = (location[0]*self.square_height)+self.indent
+        y_pos = (location[1]*self.square_height)
 
 
         self.screen.blit(svg_surface, (x_pos, y_pos))
 
-    def draw_move_hint(self, pos: tuple[int, int]) -> None:
-        circle_surf = pygame.Surface((200, 200), pygame.SRCALPHA)
-        x_pos = pos[1]*int(self.square_height)+self.indent
-        y_pos = pos[0]*int(self.square_height)
-        pygame.draw.circle(circle_surf, (255, 0, 0, 128), (x_pos, y_pos), self.square_height/2)
+    def draw_move_hint(self, location: tuple[int, int]) -> None:
+        diameter = self.square_height / 3
+        radius = diameter / 2
+        # 1. Create the transparent surface
+        hint_surface = pygame.Surface((diameter, diameter), pygame.SRCALPHA)
+        # 2. Draw circle at the center of hint_surface (local coordinates)
+        pygame.draw.circle(hint_surface, (0, 0, 0, 50), (radius, radius), radius)
+        # 3. Calculate top-left pixel position on the main screen, centered in the square
+        offset = (self.square_height - diameter) / 2
+        screen_x = (location[0] * self.square_height) + self.indent + offset
+        screen_y = (location[1] * self.square_height) + offset
+
+        # 4. Blit to pixel coordinates on the screen
+        self.screen.blit(hint_surface, (screen_x, screen_y))
 
     def debug_hitboxes(self):
         for p in game_board.piece_list:
@@ -80,6 +89,7 @@ clock = pygame.time.Clock()
 running = True
 game_board = board.Board()
 game_board.generate_board()
+selected_piece = None
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -91,14 +101,17 @@ while running:
             for piece in game_board.piece_list:
                 if piece.collision(mouse_pos):
                     print(piece.get_legal_moves())
-                    for square in piece.get_legal_moves():
-                        visualizer.draw_move_hint(square)
+                    selected_piece = piece
 
     visualizer.screen.fill(GREY)
     visualizer.draw_board()
     for piece in game_board.piece_list:
         visualizer.draw_piece(piece)
         piece.update_hitbox(visualizer)
+
+    if selected_piece is not None:
+        for square in selected_piece.get_legal_moves():
+            visualizer.draw_move_hint(square)
 
 
     # flip() the display to put your work on screen
